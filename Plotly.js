@@ -1,0 +1,1 @@
+// Grafische Darstellung (Windrosen-Diagramm)
