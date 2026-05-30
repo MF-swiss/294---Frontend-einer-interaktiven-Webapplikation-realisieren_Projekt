@@ -1,0 +1,22 @@
+{
+    "events": [
+        {
+            "id": "1",
+            "description": "Konzert in Zürich",
+            "date": "15.07.2024",
+            "location": "ZH"
+        },
+        {
+            "id": "2",
+            "description": "Festival in Bern",
+            "date": "20.08.2024",
+            "location": "BE"
+        },
+        {
+            "id": "3",
+            "description": "Theater in Basel",
+            "date": "10.09.2024",
+            "location": "BS"
+        }
+    ]
+}

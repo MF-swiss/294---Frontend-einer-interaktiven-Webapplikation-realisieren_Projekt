@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import HomePage from './pages/HomePage'
 import PageOne from './pages/PageOne'
@@ -18,4 +18,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
