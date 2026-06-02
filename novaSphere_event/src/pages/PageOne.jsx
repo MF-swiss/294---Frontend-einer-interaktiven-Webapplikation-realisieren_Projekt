@@ -8,9 +8,11 @@ export default function PageOne({ onNavigate }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newEventTitle, setNewEventTitle] = useState("");
+  const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventDate, setNewEventDate] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
   const [editDate, setEditDate] = useState("");
     
   useEffect(() => {
@@ -32,40 +34,98 @@ export default function PageOne({ onNavigate }) {
   }, []);
 
 
+  async function handleApiResponse(response, errorMessage) {
+    if (!response.ok) {
+      throw new Error(errorMessage);
+    }
+    return response.status === 204 ? null : response.json();
+  }
 
-  const addEvent = () => {
+
+  const addEvent = async () => {
     if (newEventTitle.trim() && newEventDate) {
-      const newEvent = {
-        id: Date.now(),
+      const payload = {
         title: newEventTitle,
+        description: newEventDescription,
         date: newEventDate,
       };
-      setEvents([...events, newEvent]);
-      setNewEventTitle("");
-      setNewEventDate("");
+
+      try {
+        const response = await fetch(`${API_URL}/events`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const createdEvent = await handleApiResponse(
+          response,
+          "ERROR! Event konnte nicht gespeichert werden!"
+        );
+
+        setEvents((prevEvents) => [...prevEvents, createdEvent]);
+        setNewEventTitle("");
+        setNewEventDescription("");
+        setNewEventDate("");
+      } catch (err) {
+        setError(err.message);
+      }
     }
   };
-  const startEdit = (id, title, date) => {
+  const startEdit = (id, title, description, date) => {
     setEditingId(id);
     setEditTitle(title);
+    setEditDescription(description);
     setEditDate(date);
   };
 
-  const saveEdit = (id) => {
-    const updatedEvents = events.map((event) => {
-      if (event.id === id) {
-        return { ...event, title: editTitle, date: editDate };
-      }
-      return event;
-    });
-    setEvents(updatedEvents);
-    setEditingId(null);
-    setEditTitle("");
-    setEditDate("");
+  const saveEdit = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/events/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: editTitle,
+          description: editDescription,
+          date: editDate,
+        }),
+      });
+
+      const updatedEvent = await handleApiResponse(
+        response,
+        "ERROR! Event konnte nicht aktualisiert werden!"
+      );
+
+      setEvents((prevEvents) =>
+        prevEvents.map((event) => (event.id === id ? updatedEvent : event))
+      );
+      setEditingId(null);
+      setEditTitle("");
+      setEditDescription("");
+      setEditDate("");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const deleteEvent = (id) => {
-    setEvents(events.filter((event) => event.id !== id));
+  const deleteEvent = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/events/${id}`, {
+        method: "DELETE",
+      });
+
+      await handleApiResponse(
+        response,
+        "ERROR! Event konnte nicht gelöscht werden!"
+      );
+
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
     if (isLoading) {
@@ -107,6 +167,12 @@ export default function PageOne({ onNavigate }) {
             onChange={(e) => setNewEventTitle(e.target.value)}
           />
           <input
+            type="text"
+            placeholder="Beschreibung"
+            value={newEventDescription}
+            onChange={(e) => setNewEventDescription(e.target.value)}
+          />
+          <input
             type="date"
             value={newEventDate}
             onChange={(e) => setNewEventDate(e.target.value)}
@@ -128,6 +194,12 @@ export default function PageOne({ onNavigate }) {
               onChange={(e) => setEditTitle(e.target.value)}
             />
             <input
+              type="text"
+              placeholder="Beschreibung"
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
+            <input
               type="date"
               value={editDate}
               onChange={(e) => setEditDate(e.target.value)}
@@ -146,7 +218,7 @@ export default function PageOne({ onNavigate }) {
       )}
 
       <section className="events-list-section">
-        <h2>Events ({events.length})</h2>
+        <h2>Bevorstehende Events ({events.length})</h2>
         {events.length === 0 ? (
           <p className="no-events">Keine Events vorhanden</p>
         ) : (
@@ -155,12 +227,13 @@ export default function PageOne({ onNavigate }) {
               <li key={event.id} className="event-item">
                 <div className="event-info">
                   <strong>{event.title}</strong>
+                  <strong>{event.description}</strong>
                   <span className="event-date">{event.date}</span>
                 </div>
                 <div className="event-buttons">
                   <button
                     className="edit-button"
-                    onClick={() => startEdit(event.id, event.title, event.date)}
+                    onClick={() => startEdit(event.id, event.title, event.description, event.date)}
                   >
                     Bearbeiten
                   </button>
