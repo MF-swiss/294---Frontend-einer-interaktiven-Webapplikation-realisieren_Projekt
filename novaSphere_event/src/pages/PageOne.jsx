@@ -10,6 +10,8 @@ export default function PageOne({ onNavigate }) {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [validationError, setValidationError] = useState("");
+  const [editValidationError, setEditValidationError] = useState("");
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventDate, setNewEventDate] = useState("");
@@ -44,34 +46,41 @@ export default function PageOne({ onNavigate }) {
   }
 
   const addEvent = async () => {
-    if (newEventTitle.trim() && newEventDate) {
-      const payload = {
-        title: newEventTitle,
-        description: newEventDescription,
-        date: newEventDate,
-      };
+    // Validierung der Pflichtfelder
+    if (!newEventTitle.trim() || !newEventDate) {
+      setValidationError("Bitte Pflichtfelder beachten (Titel und Datum sind erforderlich)");
+      return;
+    }
 
-      try {
-        const response = await fetch(`${API_URL}/events`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+    // Validierungsfehler löschen wenn Validierung erfolgreich
+    setValidationError("");
 
-        const createdEvent = await handleApiResponse(
-          response,
-          "ERROR! Event konnte nicht gespeichert werden!"
-        );
+    const payload = {
+      title: newEventTitle,
+      description: newEventDescription,
+      date: newEventDate,
+    };
 
-        setEvents((prevEvents) => sortByDate([...prevEvents, createdEvent]));
-        setNewEventTitle("");
-        setNewEventDescription("");
-        setNewEventDate("");
-      } catch (err) {
-        setError(err.message);
-      }
+    try {
+      const response = await fetch(`${API_URL}/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const createdEvent = await handleApiResponse(
+        response,
+        "ERROR! Event konnte nicht gespeichert werden!"
+      );
+
+      setEvents((prevEvents) => sortByDate([...prevEvents, createdEvent]));
+      setNewEventTitle("");
+      setNewEventDescription("");
+      setNewEventDate("");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -83,6 +92,15 @@ export default function PageOne({ onNavigate }) {
   };
 
   const saveEdit = async (id) => {
+    // Validierung der Pflichtfelder
+    if (!editTitle.trim() || !editDate) {
+      setEditValidationError("Bitte Pflichtfelder beachten (Titel und Datum sind erforderlich)");
+      return;
+    }
+
+    // Validierungsfehler löschen wenn Validierung erfolgreich
+    setEditValidationError("");
+
     try {
       const response = await fetch(`${API_URL}/events/${id}`, {
         method: "PATCH",
@@ -182,6 +200,11 @@ export default function PageOne({ onNavigate }) {
           <button className="add-button" onClick={addEvent}>
             Hinzufügen
           </button>
+          {validationError && (
+            <div className="error-message" style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+              {validationError}
+            </div>
+          )}
         </div>
       </section>
 
@@ -215,6 +238,11 @@ export default function PageOne({ onNavigate }) {
             >
               Abbrechen
             </button>
+            {editValidationError && (
+              <div className="error-message" style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+                {editValidationError}
+              </div>
+            )}
           </div>
         </section>
       )}

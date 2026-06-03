@@ -2,7 +2,7 @@
   "events": [
     {
       "id": "1",
-      "title": "Konzert in Zürich",
+      "title": "AC/DC",
       "description": "AC/DC",
       "date": "2026-07-30",
       "location": "ZH"
@@ -13,19 +13,6 @@
       "date": "2026-10-04",
       "location": "BE",
       "title": "Festival in Bern"
-    },
-    {
-      "id": "3",
-      "description": "The Lion King",
-      "date": "2026-06-06",
-      "location": "BS",
-      "title": "Theater in Basel"
-    },
-    {
-      "title": "Test",
-      "description": "Smile",
-      "date": "2026-06-02",
-      "id": "RygY4f-Moy8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
