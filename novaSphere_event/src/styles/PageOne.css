@@ -179,3 +179,12 @@
     gap: 12px;
   }
 }
+
+
+/* Vergangene Events */
+
+.event-item.expired {
+  opacity: 0.5;
+}
+
+

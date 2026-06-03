@@ -1,22 +1,19 @@
 {
-    "events": [
-        {
-            "id": "1",
-            "description": "Konzert in Zürich",
-            "date": "15.07.2024",
-            "location": "ZH"
-        },
-        {
-            "id": "2",
-            "description": "Festival in Bern",
-            "date": "20.08.2024",
-            "location": "BE"
-        },
-        {
-            "id": "3",
-            "description": "Theater in Basel",
-            "date": "10.09.2024",
-            "location": "BS"
-        }
-    ]
+  "events": [
+    {
+      "id": "1",
+      "title": "AC/DC",
+      "description": "AC/DC",
+      "date": "2026-07-30",
+      "location": "ZH"
+    },
+    {
+      "id": "2",
+      "description": "Fasnacht",
+      "date": "2026-10-04",
+      "location": "BE",
+      "title": "Festival in Bern"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

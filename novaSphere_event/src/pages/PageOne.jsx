@@ -3,16 +3,23 @@ import "../styles/PageOne.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const sortByDate = (arr) =>
+  [...arr].sort((a, b) => new Date(a.date) - new Date(b.date));
+
 export default function PageOne({ onNavigate }) {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [validationError, setValidationError] = useState("");
+  const [editValidationError, setEditValidationError] = useState("");
   const [newEventTitle, setNewEventTitle] = useState("");
+  const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventDate, setNewEventDate] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventLocation, setNewEventLocation] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editLocation, setEditLocation] = useState("");
@@ -65,6 +72,7 @@ export default function PageOne({ onNavigate }) {
   const startEdit = (id, title, date, description, location) => {
     setEditingId(id);
     setEditTitle(title);
+    setEditDescription(description);
     setEditDate(date);
     setEditDescription(description);
     setEditLocation(location);
@@ -170,6 +178,11 @@ export default function PageOne({ onNavigate }) {
           <button className="add-button" onClick={addEvent}>
             Hinzufügen
           </button>
+          {validationError && (
+            <div className="error-message" style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+              {validationError}
+            </div>
+          )}
         </div>
       </section>
 
@@ -203,24 +216,32 @@ export default function PageOne({ onNavigate }) {
             <button className="add-button" onClick={() => saveEdit(editingId)}>
               Speichern
             </button>
-            <button 
-              className="delete-button" 
+            <button
+              className="delete-button"
               onClick={() => setEditingId(null)}
             >
               Abbrechen
             </button>
+            {editValidationError && (
+              <div className="error-message" style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+                {editValidationError}
+              </div>
+            )}
           </div>
         </section>
       )}
 
       <section className="events-list-section">
-        <h2>Events ({events.length})</h2>
+        <h2>Bevorstehende Events ({events.length})</h2>
         {events.length === 0 ? (
           <p className="no-events">Keine Events vorhanden</p>
         ) : (
           <ul className="events-list">
             {events.map((event) => (
-              <li key={event.id} className="event-item">
+              <li
+                key={event.id}
+                className={`event-item ${new Date(event.date) < new Date(new Date().toDateString()) ? "expired" : ""}`}
+              >
                 <div className="event-info">
                   <strong>{event.title || event.description}</strong>
                   <p className="event-description">{event.description}</p>
