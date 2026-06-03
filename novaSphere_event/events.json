@@ -1,13 +1,6 @@
 {
   "events": [
     {
-      "title": "AC/DC",
-      "date": "2026-07-30",
-      "description": "AC/DC",
-      "location": "ZH",
-      "id": "1"
-    },
-    {
       "id": "2",
       "description": "Fasnacht",
       "date": "2026-10-04",

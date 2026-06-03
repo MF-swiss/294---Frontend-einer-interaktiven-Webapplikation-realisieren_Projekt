@@ -41,29 +41,36 @@ export default function PageOne({ onNavigate }) {
   }, []);
 
   const addEvent = async () => {
-    if (newEventTitle.trim() && newEventDate && newEventDescription.trim() && newEventLocation.trim()) {
-      const newEvent = {
-        title: newEventTitle,
-        date: newEventDate,
-        description: newEventDescription,
-        location: newEventLocation,
-      };
-      try {
-        const response = await fetch(`${API_URL}/events`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newEvent),
-        });
-        if (!response.ok) throw new Error("Fehler beim Hinzufügen!");
-        const addedEvent = await response.json();
-        setEvents([...events, addedEvent]);
-        setNewEventTitle("");
-        setNewEventDate("");
-        setNewEventDescription("");
-        setNewEventLocation("");
-      } catch (err) {
-        setError(err.message);
-      }
+    // Validierung der Pflichtfelder
+    if (!newEventTitle.trim() || !newEventDate) {
+      setValidationError("Bitte Pflichtfelder beachten (Titel und Datum sind erforderlich)");
+      return;
+    }
+
+    // Validierungsfehler löschen wenn Validierung erfolgreich
+    setValidationError("");
+
+    const newEvent = {
+      title: newEventTitle,
+      date: newEventDate,
+      description: newEventDescription,
+      location: newEventLocation,
+    };
+    try {
+      const response = await fetch(`${API_URL}/events`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEvent),
+      });
+      if (!response.ok) throw new Error("Fehler beim Hinzufügen!");
+      const addedEvent = await response.json();
+      setEvents([...events, addedEvent]);
+      setNewEventTitle("");
+      setNewEventDate("");
+      setNewEventDescription("");
+      setNewEventLocation("");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -77,6 +84,15 @@ export default function PageOne({ onNavigate }) {
   };
 
   const saveEdit = async (id) => {
+    // Validierung der Pflichtfelder
+    if (!editTitle.trim() || !editDate) {
+      setEditValidationError("Bitte Pflichtfelder beachten (Titel und Datum sind erforderlich)");
+      return;
+    }
+
+    // Validierungsfehler löschen wenn Validierung erfolgreich
+    setEditValidationError("");
+
     const editedEvent = { 
       title: editTitle, 
       date: editDate,
@@ -106,6 +122,11 @@ export default function PageOne({ onNavigate }) {
   };
 
   const deleteEvent = async (id) => {
+    // Bestätigungsdialog anzeigen
+    if (!window.confirm("Möchtest du dieses Event wirklich löschen?")) {
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/events/${id}`, {
         method: "DELETE",
