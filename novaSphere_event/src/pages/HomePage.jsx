@@ -20,6 +20,7 @@ export default function HomePage({ onNavigate }) {
       </section>
 
       <section className="post">
+        <h1>Nächstes Event</h1>
         <Post />
       </section>
     </div>

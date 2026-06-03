@@ -1,12 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import '../styles/Countdown.css';
+import '../styles/Post.css';
 
-/**
- * Countdown component
- * Props:
- * - targetDate: Date | number | string (will be parsed with `new Date(...)`)
- * - onComplete?: () => void  (optional callback when countdown reaches zero)
- */
 export default function Countdown({ targetDate, onComplete } = {}) {
   const [parts, setParts] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const timerRef = useRef(null);
