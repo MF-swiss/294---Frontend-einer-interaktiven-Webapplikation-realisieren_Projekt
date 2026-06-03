@@ -65,10 +65,9 @@ export default function Post({ eventId } = {}) {
 
   return (
     <article className="post" style={{ backgroundImage: `url(${imgSrc})` }}>
-      <h2>Nächstes Event</h2>
       <h1 className="post-title">{eventData.title || 'Nächstes Event'}</h1>
-      <p className="post-date">Findet statt am {dateStr}</p>
-      {eventData.description && <p className="post-description">{eventData.description}</p>}
+      <h2 className="post-date">Findet statt am <strong>{dateStr}</strong></h2>
+      {eventData.description && <h3 className="post-description">{eventData.description}</h3>}
       <Countdown targetDate={eventData.date} onComplete={() => console.log('Event erreicht')} />
     </article>
   );
