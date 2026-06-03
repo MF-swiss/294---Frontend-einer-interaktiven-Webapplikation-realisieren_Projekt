@@ -22,6 +22,15 @@ body {
   padding: 40px 20px;
 }
 
+img {
+  max-width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-top: 40px;
+}
+
+
 /* Homepage Styles */
 .hero-section {
   text-align: center;
@@ -48,6 +57,8 @@ body {
   justify-content: center;
   padding: 20px;
 }
+
+
 
 /* Navigation Buttons */
 .nav-button,
@@ -98,4 +109,15 @@ body {
 .delete-button:focus-visible {
   outline: 2px solid #0066cc;
   outline-offset: 2px;
+}
+
+
+/* Post */
+.post {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  color: white; /* Text sichtbar */
 }
