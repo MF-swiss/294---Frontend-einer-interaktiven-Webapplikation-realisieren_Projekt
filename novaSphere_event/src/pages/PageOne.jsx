@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/PageOne.css";
 
-const API_URL = "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PageOne({ onNavigate }) {
   const [events, setEvents] = useState([]);
@@ -9,9 +9,13 @@ export default function PageOne({ onNavigate }) {
   const [error, setError] = useState(null);
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDate, setNewEventDate] = useState("");
+  const [newEventDescription, setNewEventDescription] = useState("");
+  const [newEventLocation, setNewEventLocation] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDate, setEditDate] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editLocation, setEditLocation] = useState("");
     
   useEffect(() => {
     async function loadEvents() {
@@ -21,7 +25,7 @@ export default function PageOne({ onNavigate }) {
           throw new Error("ERROR! Die Events konnten nicht geladen werden!");
         }
         const data = await response.json();
-        setEvents(data);
+        setEvents(data.events || data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -31,44 +35,83 @@ export default function PageOne({ onNavigate }) {
     loadEvents();
   }, []);
 
-
-
-  const addEvent = () => {
-    if (newEventTitle.trim() && newEventDate) {
+  const addEvent = async () => {
+    if (newEventTitle.trim() && newEventDate && newEventDescription.trim() && newEventLocation.trim()) {
       const newEvent = {
-        id: Date.now(),
         title: newEventTitle,
         date: newEventDate,
+        description: newEventDescription,
+        location: newEventLocation,
       };
-      setEvents([...events, newEvent]);
-      setNewEventTitle("");
-      setNewEventDate("");
+      try {
+        const response = await fetch(`${API_URL}/events`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newEvent),
+        });
+        if (!response.ok) throw new Error("Fehler beim Hinzufügen!");
+        const addedEvent = await response.json();
+        setEvents([...events, addedEvent]);
+        setNewEventTitle("");
+        setNewEventDate("");
+        setNewEventDescription("");
+        setNewEventLocation("");
+      } catch (err) {
+        setError(err.message);
+      }
     }
   };
-  const startEdit = (id, title, date) => {
+
+  const startEdit = (id, title, date, description, location) => {
     setEditingId(id);
     setEditTitle(title);
     setEditDate(date);
+    setEditDescription(description);
+    setEditLocation(location);
   };
 
-  const saveEdit = (id) => {
-    const updatedEvents = events.map((event) => {
-      if (event.id === id) {
-        return { ...event, title: editTitle, date: editDate };
-      }
-      return event;
-    });
-    setEvents(updatedEvents);
-    setEditingId(null);
-    setEditTitle("");
-    setEditDate("");
+  const saveEdit = async (id) => {
+    const editedEvent = { 
+      title: editTitle, 
+      date: editDate,
+      description: editDescription,
+      location: editLocation
+    };
+    try {
+      const response = await fetch(`${API_URL}/events/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editedEvent),
+      });
+      if (!response.ok) throw new Error("Fehler beim Bearbeiten!");
+      const updatedEvent = await response.json();
+      const updatedEvents = events.map((event) => 
+        event.id === id ? updatedEvent : event
+      );
+      setEvents(updatedEvents);
+      setEditingId(null);
+      setEditTitle("");
+      setEditDate("");
+      setEditDescription("");
+      setEditLocation("");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const deleteEvent = (id) => {
-    setEvents(events.filter((event) => event.id !== id));
+  const deleteEvent = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/events/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Fehler beim Löschen!");
+      setEvents(events.filter((event) => event.id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-    if (isLoading) {
+  if (isLoading) {
     return (
       <div>
         <h1>Events</h1>
@@ -76,13 +119,14 @@ export default function PageOne({ onNavigate }) {
       </div>
     );
   }
+
   if (error) {
     return (
       <div>
         <h1>Events</h1>
         <p>Fehler: {error}</p>
         <button onClick={() => window.location.reload()}>
-         Refresh
+          Refresh
         </button>
       </div>
     );
@@ -107,9 +151,21 @@ export default function PageOne({ onNavigate }) {
             onChange={(e) => setNewEventTitle(e.target.value)}
           />
           <input
+            type="text"
+            placeholder="Beschreibung"
+            value={newEventDescription}
+            onChange={(e) => setNewEventDescription(e.target.value)}
+          />
+          <input
             type="date"
             value={newEventDate}
             onChange={(e) => setNewEventDate(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Ort"
+            value={newEventLocation}
+            onChange={(e) => setNewEventLocation(e.target.value)}
           />
           <button className="add-button" onClick={addEvent}>
             Hinzufügen
@@ -128,9 +184,21 @@ export default function PageOne({ onNavigate }) {
               onChange={(e) => setEditTitle(e.target.value)}
             />
             <input
+              type="text"
+              placeholder="Beschreibung"
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
+            <input
               type="date"
               value={editDate}
               onChange={(e) => setEditDate(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Ort"
+              value={editLocation}
+              onChange={(e) => setEditLocation(e.target.value)}
             />
             <button className="add-button" onClick={() => saveEdit(editingId)}>
               Speichern
@@ -154,13 +222,15 @@ export default function PageOne({ onNavigate }) {
             {events.map((event) => (
               <li key={event.id} className="event-item">
                 <div className="event-info">
-                  <strong>{event.title}</strong>
+                  <strong>{event.title || event.description}</strong>
+                  <p className="event-description">{event.description}</p>
                   <span className="event-date">{event.date}</span>
+                  <span className="event-location">{event.location}</span>
                 </div>
                 <div className="event-buttons">
                   <button
                     className="edit-button"
-                    onClick={() => startEdit(event.id, event.title, event.date)}
+                    onClick={() => startEdit(event.id, event.title, event.date, event.description, event.location)}
                   >
                     Bearbeiten
                   </button>
