@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
 import HomePage from './pages/HomePage'
 import PageOne from './pages/PageOne'

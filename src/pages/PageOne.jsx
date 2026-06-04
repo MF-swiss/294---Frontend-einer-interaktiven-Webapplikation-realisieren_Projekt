@@ -29,12 +29,12 @@ export default function PageOne({ onNavigate }) {
       try {
         const response = await fetch(`${API_URL}/events`);
         if (!response.ok) {
-          throw new Error("ERROR! Die Events konnten nicht geladen werden!");
+          throw new Error("Daten konnten nicht geladen werden");
         }
         const data = await response.json();
         setEvents(sortByDate(data.events || data));
       } catch (err) {
-        setError(err.message);
+        setError(err.message || 'Daten konnten nicht geladen werden');
       } finally {
         setIsLoading(false);
       }
@@ -63,7 +63,7 @@ export default function PageOne({ onNavigate }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newEvent),
       });
-      if (!response.ok) throw new Error("Fehler beim Hinzufügen!");
+      if (!response.ok) throw new Error("Daten konnten nicht gespeichert werden");
       const addedEvent = await response.json();
       setEvents(sortByDate([...events, addedEvent]));
       setNewEventTitle("");
@@ -71,11 +71,8 @@ export default function PageOne({ onNavigate }) {
       setNewEventDescription("");
       setNewEventLocation("");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Daten konnten nicht gespeichert werden');
     }
-  };
-  let textDissapear = () => {
-    setShowText(!showtext);
   };
   const startEdit = (id, title, date, description, location) => {
     setEditingId(id);
@@ -108,7 +105,7 @@ export default function PageOne({ onNavigate }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedEvent),
       });
-      if (!response.ok) throw new Error("Fehler beim Bearbeiten!");
+      if (!response.ok) throw new Error("Daten konnten nicht gespeichert werden");
       const updatedEvent = await response.json();
       const updatedEvents = events.map((event) => 
         event.id === id ? updatedEvent : event
@@ -120,7 +117,7 @@ export default function PageOne({ onNavigate }) {
       setEditDescription("");
       setEditLocation("");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Daten konnten nicht gespeichert werden');
     }
   };
 
@@ -134,10 +131,10 @@ export default function PageOne({ onNavigate }) {
       const response = await fetch(`${API_URL}/events/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Fehler beim Löschen!");
+      if (!response.ok) throw new Error("Daten konnten nicht gelöscht werden");
       setEvents(events.filter((event) => event.id !== id));
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Daten konnten nicht gelöscht werden');
     }
   };
 
@@ -164,10 +161,6 @@ export default function PageOne({ onNavigate }) {
   const onButtonClick = () => {
     setShowText(false);
     addEvent();
-  };
-  const onButtonClickEdit = () => {
-    setShowTextEdit(false);
-    saveEdit(editingId);
   };
   return (
     <div className="page-container">
