@@ -29,6 +29,7 @@ img {
   display: block;
   margin: 0 auto;
   margin-top: 20px;
+  box-shadow: 0 0 24px 6px rgba(0, 225, 255, 0.705);
 }
 
 
@@ -43,12 +44,14 @@ img {
   font-size: 2.5rem;
   margin: 0;
   color: #00e1ff;
+  text-shadow: 4px 4px #00e1ff52;
 }
 
 .hero-section h3 {
   font-size: 1.3rem;
-  color: #818181;
+  color: #9c9c9c;
   margin: 10px 0 0 0;
+  text-shadow: 4px 4px #00e1ff52;
 }
 
 .menu-section {
@@ -71,7 +74,7 @@ img {
   border-radius: 8px;
   border: 2px solid #00c3ff;
   background-color: #dde2e6;
-  color: #0183aa;
+  color: #027483;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
@@ -80,9 +83,9 @@ img {
 .nav-button:hover,
 .back-button:hover,
 .add-button:hover {
-  background-color: #0066cc;
+  background-color: #027483;
   color: white;
-  box-shadow: 0 0 0 7px #0066ccb8;
+  box-shadow: 0 0 24px 6px rgba(0, 225, 255, 0.55);
   transform: translateY(-2px);
 }
 
@@ -124,177 +127,6 @@ img {
   color: rgb(255, 255, 255); /* Text sichtbar */
 }
 
-/* ─── Event Card ─────────────────────────────────── */
-.event-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 24px;
-  background-color: #2e3257;
-  border: 1px solid #3D4599;
-  border-left: 4px solid #00e1ff;   /* Akzentlinie links */
-  border-radius: 10px;
-  transition: box-shadow 0.25s ease, border-left-color 0.25s ease;
-  gap: 16px;
-}
-
-.event-item:hover {
-  box-shadow: 0 4px 18px rgba(0, 225, 255, 0.18);
-  border-left-color: #7ee8ff;
-}
-
-/* ─── Info-Block (links) ─────────────────────────── */
-.event-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;   /* linksbündig */
-  gap: 4px;
-  min-width: 0;              /* verhindert overflow */
-}
-
-/* Titel */
-.event-info strong {
-  font-size: 15px;
-  font-weight: 700;
-  color: #00e1ff;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-/* Beschreibung (falls vorhanden) */
-.event-info .event-description {
-  font-size: 13px;
-  color: #b0b8d6;
-  line-height: 1.45;
-}
-
-/* Meta-Zeile: Datum + Ort nebeneinander */
-.event-meta {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 2px;
-}
-
-.event-date {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: #7a85b0;
-  font-variant-numeric: tabular-nums;
-}
-
-.event-date::before {
-  content: "📅";
-  font-size: 11px;
-}
-
-.event-location {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: #7a85b0;
-}
-
-.event-location::before {
-  content: "📍";
-  font-size: 11px;
-}
-
-/* ─── Button-Gruppe (rechts) ─────────────────────── */
-.event-buttons {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.add-button, .edit-button, .delete-button, .back-button {
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  white-space: nowrap;
-}
-
-.add-button:active,
-.edit-button:active,
-.delete-button:active {
-  transform: scale(0.97);
-}
-
-.add-button {
-  background-color: #4CAF50;
-  color: white;
-}
-.add-button:hover { background-color: #45a049; }
-
-.edit-button {
-  background-color: #2196F3;
-  color: white;
-}
-.edit-button:hover { background-color: #0b7dda; }
-
-.delete-button {
-  background-color: #f44336;
-  color: white;
-}
-.delete-button:hover { background-color: #da190b; }
-
-.back-button {
-  background-color: #666;
-  color: white;
-}
-.back-button:hover { background-color: #555; }
-
-/* ─── Leer-State ─────────────────────────────────── */
-.no-events {
-  padding: 30px;
-  text-align: center;
-  color: #999;
-  font-size: 16px;
-  background-color: #2e3257;
-  border-radius: 10px;
-}
-
-/* ─── Vergangene Events ──────────────────────────── */
-.event-item.expired {
-  opacity: 0.45;
-  border-left-color: #555;
-}
-
-/* ─── Responsive ─────────────────────────────────── */
-@media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .form-group {
-    flex-direction: column;
-  }
-
-  .form-group input {
-    width: 100%;
-  }
-
-  .event-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .event-buttons {
-    width: 100%;
-    justify-content: flex-end;
-  }
+.post h1 {
+  text-shadow: 3px 3px #00c3ffa1;
 }

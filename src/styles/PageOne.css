@@ -12,7 +12,9 @@
 .page-header h1 {
   margin: 0;
   font-size: 2rem;
-  color: #3D4166;
+  color: #9c9c9c;
+  margin: 10px 0 0 0;
+  text-shadow: 3px 3px #00e1ff52;
 }
 
 .add-event-section {
@@ -26,6 +28,7 @@
   margin: 0 0 20px 0;
   font-size: 1.3rem;
   color: #333;
+  
 }
 
 .form-group {
@@ -45,8 +48,8 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #0066cc;
-  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+  border-color: #0066cc00;
+  box-shadow: 0 0 0 2px rgba(0, 163, 204, 0.788);
 }
 
 .events-list-section {
@@ -56,7 +59,7 @@
 .events-list-section h2 {
   margin: 0 0 20px 0;
   font-size: 1.3rem;
-  color: #3D4166;
+  color: #9c9c9c;
 }
 
 .events-list {
@@ -65,99 +68,165 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
+/* ─── Event Card ─────────────────────────────────── */
 .event-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background-color: #3D4166;
+  padding: 18px 24px;
+  background-color: #2e3257;
   border: 1px solid #3D4599;
-  border-radius: 8px;
-  transition: box-shadow 0.3s ease;
+  border-left: 4px solid #00e1ff;   /* Akzentlinie links */
+  border-radius: 10px;
+  transition: box-shadow 0.25s ease, border-left-color 0.25s ease;
+  gap: 16px;
 }
 
 .event-item:hover {
-  box-shadow: 0 2px 12px #00e1ff;
+  box-shadow: 0 0 24px 6px rgba(0, 225, 255, 0.55);
+  border-left-color: #7ee8ff;
 }
 
+/* ─── Info-Block (links) ─────────────────────────── */
 .event-info {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;   /* linksbündig */
+  gap: 4px;
+  min-width: 0;              /* verhindert overflow */
 }
 
+/* Titel */
 .event-info strong {
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 700;
   color: #00e1ff;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Beschreibung (falls vorhanden) */
+.event-info .event-description {
+  font-size: 13px;
+  color: #b0b8d6;
+  line-height: 1.45;
+}
+
+/* Meta-Zeile: Datum + Ort nebeneinander */
+.event-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 2px;
 }
 
 .event-date {
-  font-size: 14px;
-  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #7a85b0;
+  font-variant-numeric: tabular-nums;
 }
 
-.no-events {
-  padding: 30px;
-  text-align: center;
-  color: #999;
-  font-size: 16px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+.event-date::before {
+  content: "📅";
+  font-size: 11px;
 }
 
+.event-location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #7a85b0;
+}
+
+.event-location::before {
+  content: "📍";
+  font-size: 11px;
+}
+
+/* ─── Button-Gruppe (rechts) ─────────────────────── */
 .event-buttons {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .add-button, .edit-button, .delete-button, .back-button {
   padding: 8px 16px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; /* box-shadow ergänzt */
+  white-space: nowrap;
+}
+
+.add-button:active,
+.edit-button:active,
+.delete-button:active {
+  transform: scale(0.97);
 }
 
 .add-button {
   background-color: #4CAF50;
   color: white;
 }
-
-.add-button:hover {
-  background-color: #45a049;
-}
+.add-button:hover { background-color: #45a049; }
 
 .edit-button {
   background-color: #2196F3;
   color: white;
 }
-
 .edit-button:hover {
   background-color: #0b7dda;
+  transform: translateY(-2px);
+  box-shadow: 0 0 14px 4px rgba(33, 150, 243, 0.6);
 }
 
 .delete-button {
   background-color: #f44336;
   color: white;
 }
-
 .delete-button:hover {
   background-color: #da190b;
+  transform: translateY(-2px);
+  box-shadow: 0 0 14px 4px rgba(244, 67, 54, 0.6);
 }
 
 .back-button {
   background-color: #666;
   color: white;
 }
+.back-button:hover { background-color: #555; }
 
-.back-button:hover {
-  background-color: #555;
+/* ─── Leer-State ─────────────────────────────────── */
+.no-events {
+  padding: 30px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  background-color: #2e3257;
+  border-radius: 10px;
 }
 
+/* ─── Vergangene Events ──────────────────────────── */
+.event-item.expired {
+  opacity: 0.45;
+  border-left-color: #555;
+}
+
+/* ─── Responsive ─────────────────────────────────── */
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;
@@ -178,13 +247,9 @@
     align-items: flex-start;
     gap: 12px;
   }
+
+  .event-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
-
-
-/* Vergangene Events */
-
-.event-item.expired {
-  opacity: 0.5;
-}
-
-
